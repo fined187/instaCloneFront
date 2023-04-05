@@ -10,6 +10,7 @@ import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import routes from "./Routes";
 import styled from "styled-components";
 import { FatLink } from "../components/Shared";
+import PageTitle from "../components/PageTitle";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -26,6 +27,7 @@ const Subtitle = styled(FatLink)`
 const SignUp = () => {
   return(
     <AuthLayout>
+      <PageTitle title="Sign up" />
       <FormBox>
         <div>
           <HeaderContainer>
