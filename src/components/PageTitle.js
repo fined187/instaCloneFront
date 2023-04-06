@@ -2,7 +2,7 @@ import {PropTypes} from "prop-types";
 import { Helmet } from "react-helmet-async"
 
 const PageTitle = ({title}) => {
-  return <Helmet>{title} | Instagram</Helmet>;
+  return <Helmet><title>{title} | Instagram</title></Helmet>;
 }
 
 PageTitle.propTypes = {
