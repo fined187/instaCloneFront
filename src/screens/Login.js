@@ -34,6 +34,11 @@ const LOGIN_MUTATION = gql`
   }
 `;
 
+const Notification = styled.div`
+  color: #2ecc71;
+`;
+
+
 const Login = () => {
   const { register, handleSubmit, formState, getValues, setError, clearErrors} = useForm({
     mode: "onChange",
@@ -75,6 +80,9 @@ const Login = () => {
           <div>
             <FontAwesomeIcon icon={faInstagram} size="3x" />
           </div>
+          <Notification>
+            {location?.state?.message}
+          </Notification>
           <form onSubmit={handleSubmit(onSubmitValid)}>
             <Input {...register("userName", {required: "Username is required.", minLength: {value: 5, message: "Username should be longer than 5 letters."}})} name="userName" type="text" hasError={Boolean(formState.errors?.username?.message)} onChange={clearLoginError} placeholder="userName" />
             <FormError message={formState.errors?.username?.message} />
