@@ -1,11 +1,36 @@
-import { isLoggedInVar, logUserOut } from "../apollo";
+import { gql, useQuery } from "@apollo/client";
+import Photo from "../components/feed/Photo";
+
+const FEED_QUERY = gql`
+  query seeFeed {
+    seeFeed {
+      id
+      user {
+        userName
+        avatar
+      }
+      file
+      caption
+      likes
+      comments
+      createAt
+      isMine
+      isLiked
+    }
+  }
+`;
 
 const Home = () => {
+  const { data } = useQuery(FEED_QUERY);
+  
   return (
     <div>
-      <h1>welcome</h1>
-      <button onClick={() => logUserOut()}>Log out now!</button>
+      {
+        data?.seeFeed?.map((photo) => (
+          <Photo key={photo.id} {...photo} />
+        ))}
     </div>
-  )
+  );
 };
+
 export default Home;
