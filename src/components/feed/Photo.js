@@ -67,15 +67,44 @@ import { gql, useMutation } from "@apollo/client";
 const Photo = ({
   id,
   user,
-  userName,
   file,
   isLiked,
   likes
 }) => {
-  const [toggleLikeMutation, {loading}] = useMutation(TOGGLE_LIKE_MUTATION, {
+  const updateToggleLike = (cache, result) => {
+    const {data: {toggleLike: {ok}}} = result;
+    if(ok) {
+      const fragmentId = `Photo:${id}`;
+      const fragment = gql`
+      fragment BSName on Photo {
+        isLiked
+        likes
+      }
+    `
+      const result = cache.readFragment({
+        id: fragmentId,
+        fragment: fragment,
+      });
+      if("isLiked" in result && "likes" in result) {
+        const {isLiked, likes} = result;
+        cache.writeFragment({
+          id: fragmentId,
+          fragment: fragment,
+          data: {
+            isLiked: !isLiked,
+            likes: isLiked ? likes - 1 : likes + 1,
+          },
+        });
+      }
+      /*
+      */
+    }
+  };
+  const [toggleLikeMutation] = useMutation(TOGGLE_LIKE_MUTATION, {
     variables: {
       id,
-    }
+    },
+    update: updateToggleLike,
   });
   return (
     <PhotoContainer key={id}>
