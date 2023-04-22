@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark, faComment, faHeart, faPaperPlane } from "@fortawesome/free-regular-svg-icons";
 import {faHeart as SolidHeart} from "@fortawesome/free-solid-svg-icons";
 import { gql, useMutation } from "@apollo/client";
+import Comments from "./Comments";
 
   const TOGGLE_LIKE_MUTATION = gql`
     mutation toggleLike($id: Int!) {
@@ -69,33 +70,29 @@ const Photo = ({
   user,
   file,
   isLiked,
-  likes
+  likes,
+  caption,
+  commentsNumber,
+  comments
 }) => {
   const updateToggleLike = (cache, result) => {
     const {data: {toggleLike: {ok}}} = result;
     if(ok) {
-      const fragmentId = `Photo:${id}`;
-      const fragment = gql`
-      fragment BSName on Photo {
-        isLiked
-        likes
-      }
-    `
-      const result = cache.readFragment({
-        id: fragmentId,
-        fragment: fragment,
-      });
-      if("isLiked" in result && "likes" in result) {
-        const {isLiked, likes} = result;
-        cache.writeFragment({
-          id: fragmentId,
-          fragment: fragment,
-          data: {
-            isLiked: !isLiked,
-            likes: isLiked ? likes - 1 : likes + 1,
+      const photoId = `Photo: ${id}`;
+      cache.modify({
+        id: photoId,
+        fields: {
+          isLiked(prev) {
+            return !prev;
           },
-        });
-      }
+          likes(prev) {
+            if(isLiked) {
+              return prev - 1;
+            }
+            return prev + 1;
+          },
+        },
+      });
       /*
       */
     }
@@ -136,6 +133,12 @@ const Photo = ({
         <Likes>
           {likes === 1 ? "1 like" : `${likes} likes`}
         </Likes>
+        <Comments 
+          author={user.userName}
+          caption={caption}
+          comments={comments}
+          commentsNumber={commentsNumber}
+        />
       </PhotoData>
     </PhotoContainer> 
   );
@@ -147,9 +150,11 @@ Photo.propTypes = {
     avatar: PropTypes.string,
     userName: PropTypes.string.isRequired,
   }),
+  caption: PropTypes.string,
   file: PropTypes.string.isRequired,
   isLiked: PropTypes.bool.isRequired,
-  likes: PropTypes.number.isRequired
+  likes: PropTypes.number.isRequired,
+  commentsNumber: PropTypes.number.isRequired,
 };
 
 export default Photo;
