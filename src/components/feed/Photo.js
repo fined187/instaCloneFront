@@ -133,7 +133,8 @@ const Photo = ({
         <Likes>
           {likes === 1 ? "1 like" : `${likes} likes`}
         </Likes>
-        <Comments 
+        <Comments
+          photoId={id}
           author={user.userName}
           caption={caption}
           comments={comments}

@@ -4,7 +4,10 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import React from "react";
 
-const CommentContainer = styled.div``;
+const CommentContainer = styled.div`
+  margin-bottom: 7px;
+`;
+
 const CommentCaption = styled.span`
   margin-left: 10px;
   a {
