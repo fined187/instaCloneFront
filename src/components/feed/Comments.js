@@ -64,11 +64,26 @@ function Comments({photoId, author, caption, commentsNumber, comments}) {
           ...userData.me
         },
       };
+      const newCacheComment = cache.writeFragment({               //  cache에 comment 쓰기
+        data: newComment,
+        fragment: gql`
+          fragment BSName on Comment {
+            id
+            createdAt
+            isMine
+            payload
+            user {
+              userName
+              avatar
+            }
+          }
+        `
+      });
       cache.modify({
         id: `Photo: ${photoId}`,
         fields: {
           comments(prev) {
-            return [...prev, newComment];
+            return [...prev, newCacheComment];
           },
           commentsNumber(prev) {
             return prev + 1;
@@ -107,7 +122,14 @@ function Comments({photoId, author, caption, commentsNumber, comments}) {
           {commentsNumber === 1 ? "1 comment" : `${commentsNumber} comments`}
         </CommentCount>
         {comments?.map(comment => (
-          <Comment key={comment.id} author={comment.user.userName} payload={comment.payload} />
+          <Comment 
+            key={comment.id}
+            id={comment.id}
+            photoId={comment.photoId}
+            author={comment.user.userName} 
+            payload={comment.payload} 
+            isMine={comment.isMine}
+          />
         ))}
         <PostCommentContainer>
           <form onSubmit={handleSubmit(onValid)}>
