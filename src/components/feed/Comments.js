@@ -4,6 +4,7 @@ import Comment from "./Comment";
 import { useForm } from "react-hook-form";
 import { gql, useMutation } from "@apollo/client";
 import useUser from "../../hooks/useUser";
+import { Link } from "react-router-dom";
 
   const CommentsContainer = styled.div`
     margin-top: 20px;
